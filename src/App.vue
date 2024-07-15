@@ -9,6 +9,8 @@ import dragonMines from './assets/TrackPreviews/dragon-mines.jpg'
 import hotairSkyway from './assets/TrackPreviews/hot-air-skyway.jpg'
 import mysteryCaves from './assets/TrackPreviews/mystery-caves.jpg'
 
+import { ref } from 'vue'
+
 const tracks = [
   { trackName: 'Blizzard Bluff', imageSrc: blizzardBluff },
   { trackName: 'Coco Park', imageSrc: cocoPark },
@@ -19,6 +21,33 @@ const tracks = [
   { trackName: 'Hot Air Skyway', imageSrc: hotairSkyway },
   { trackName: 'Mystery Caves', imageSrc: mysteryCaves }
 ]
+
+const tracksPlayerone = ref([])
+
+const tracksPlayertwo = ref([])
+
+const userPlayer = ref('PlayerOne')
+
+function addTrack(trackName) {
+  if (userPlayer.value === 'PlayerOne') {
+    tracksPlayerone.value.push(trackName)
+  } else if (userPlayer.value === 'PlayerTwo') {
+    tracksPlayertwo.value.push(trackName)
+  }
+}
+
+function playerStyle(trackName) {
+  if (tracksPlayerone.value.some((checkTrack) => checkTrack === trackName)) {
+    return 'selected-player1'
+  } else if (tracksPlayertwo.value.some((checkTrack) => checkTrack === trackName)) {
+    return 'selected-player2'
+  }
+  return ''
+}
+
+function changeUserPlayer(player) {
+  userPlayer.value = player
+}
 </script>
 
 <template>
@@ -26,11 +55,11 @@ const tracks = [
     <div class="container">
       <header style="color: #ed6802; font-size: 40px">Track Select</header>
       <div class="player-container">
-        <div class="player">
+        <div class="player" @click="changeUserPlayer('PlayerOne')">
           <div class="player-name">Player One</div>
           <div class="player-square"></div>
         </div>
-        <div class="player">
+        <div class="player" @click="changeUserPlayer('PlayerTwo')">
           <div class="player-name">Player Two</div>
           <div class="player-circle"></div>
         </div>
@@ -43,6 +72,8 @@ const tracks = [
           :key="track.trackName"
           :imageSrc="track.imageSrc"
           :trackName="track.trackName"
+          @click="addTrack(track.trackName)"
+          :class="playerStyle(track.trackName)"
         />
       </div>
     </div>
@@ -72,10 +103,10 @@ const tracks = [
   color: white;
 }
 .player:nth-child(1) {
-  background-color: blue;
+  background-color: red;
 }
 .player:nth-child(2) {
-  background-color: red;
+  background-color: blue;
 }
 .player-square {
   height: 10px;
@@ -89,6 +120,14 @@ const tracks = [
   background-color: white;
   border-radius: 50%;
   margin-right: 10px;
+}
+
+.selected-player1 {
+  background: red;
+}
+
+.selected-player2 {
+  background: blue;
 }
 
 .track-icons-container {
